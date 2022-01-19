@@ -11,11 +11,27 @@ set(CMAKE_CXX_STANDARD 11)
 add_executable(beef-planet WIN32
     # Source files
     src/main.cpp
-    src/template_application.cpp
+    src/beef_application.cpp
+    src/game_object.cpp
+    src/gravity_simulator.cpp
+    src/mouse_controller.cpp
+    src/physical_object.cpp
+    src/physics_component.cpp
+    src/planet_spawner.cpp
+    src/player_object.cpp
+    src/universe.cpp
 
     # Include files
     include/delta.h
-    include/template_application.h
+    include/beef_application.h
+    include/game_object.h
+    include/gravity_simulator.h
+    include/mouse_controller.h
+    include/physical_object.h
+    include/physics_component.h
+    include/planet_spawner.h
+    include/player_object.h
+    include/universe.h
 )
 
 target_link_libraries(beef-planet
