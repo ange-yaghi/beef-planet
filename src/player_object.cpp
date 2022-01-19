@@ -45,6 +45,7 @@ void bp::PlayerObject::render()
     m_shaders->ResetBrdfParameters();
     m_shaders->SetBaseColor(m_color);
     m_shaders->SetSpecularRoughness(1.0f);
+    m_shaders->SetColorReplace(true);
     //m_engine->SetEmission(ysMath::Mul(ysColor::srgbiToLinear(0xAA, 0xAA, 0xFF), ysMath::LoadScalar(0.2f)));
     m_universe->DrawScaleModel(m_model, m_size, nullptr, m_physics_component.m_transform.GetWorldTransform());
 

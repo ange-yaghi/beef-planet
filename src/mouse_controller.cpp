@@ -54,6 +54,7 @@ void bp::MouseController::process(const ysVector &planet_position)
     m_shaders->SetCameraPosition(camera_position);
     m_shaders->SetCameraUp(camera_up);
     m_shaders->SetCameraTarget(camera_target);
+    m_shaders->CalculateCamera();
 }
 
 void bp::MouseController::getMouseChange(int *x, int *y)

@@ -40,11 +40,15 @@ void bp::Universe::render()
 void bp::Universe::DrawScaleModel(dbasic::ModelAsset *model, double size, ysTexture *texture, const ysMatrix &transform)
 {
     ysMatrix scaledTransform = transform;
+
     scaledTransform = ysMath::Transpose(scaledTransform);
     scaledTransform.rows[3] = ysMath::Mul(scaledTransform.rows[3], ysMath::LoadVector(m_scale, m_scale, m_scale, 1.0));
     scaledTransform = ysMath::Transpose(scaledTransform);
+    scaledTransform = ysMath::MatMult(
+        scaledTransform,
+        ysMath::ScaleTransform(ysMath::LoadScalar(size * m_scale)));
     m_shaders->SetObjectTransform(scaledTransform);
-    m_engine->DrawModel(m_shaders->GetRegularFlags(), model, size * m_scale);
+    m_engine->DrawModel(m_shaders->GetRegularFlags(), model);
 }
 
 void bp::Universe::addScaleLight(dbasic::Light& light)
