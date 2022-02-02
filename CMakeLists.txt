@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.10)
 
+option(DTV "Enable video output" OFF)
+
+if (DTV)
+    add_compile_definitions(BEEF_PLANET_ENABLE_VIDEO_CAPTURE)
+endif (DTV)
+
 # Enable group projects in folders
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "cmake")
@@ -39,5 +45,10 @@ target_link_libraries(beef-planet
 
 target_include_directories(beef-planet
     PUBLIC dependencies/submodules)
+
+if (DTV)
+    target_link_libraries(beef-planet
+        direct-to-video)
+endif (DTV)
 
 add_subdirectory(dependencies)

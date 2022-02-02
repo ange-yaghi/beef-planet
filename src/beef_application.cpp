@@ -6,13 +6,19 @@
 
 bp::BeefApplication::BeefApplication() {
     m_player = nullptr;
+
+    m_recording = false;
+    m_screenResolutionIndex = 0;
+    for (int i = 0; i < ScreenResolutionHistoryLength; ++i) {
+        m_screenResolution[i][0] = m_screenResolution[i][1] = 0;
+    }
 }
 
 bp::BeefApplication::~BeefApplication() {
     /* void */
 }
 
-void bp::BeefApplication::Initialize(void *instance, ysContextObject::DeviceAPI api) {
+void bp::BeefApplication::initialize(void *instance, ysContextObject::DeviceAPI api) {
     dbasic::Path modulePath = dbasic::GetModulePath();
     dbasic::Path confPath = modulePath.Append("delta.conf");
 
@@ -20,7 +26,7 @@ void bp::BeefApplication::Initialize(void *instance, ysContextObject::DeviceAPI 
     std::string assetPath = "../assets";
     if (confPath.Exists()) {
         std::fstream confFile(confPath.ToString(), std::ios::in);
-        
+
         std::getline(confFile, enginePath);
         std::getline(confFile, assetPath);
         enginePath = modulePath.Append(enginePath).ToString();
@@ -84,11 +90,11 @@ void bp::BeefApplication::Initialize(void *instance, ysContextObject::DeviceAPI 
     m_shaders.SetFogColor(clearColor);
 }
 
-void bp::BeefApplication::Process() {
+void bp::BeefApplication::process() {
     m_universe.process(m_engine.GetFrameLength());
 }
 
-void bp::BeefApplication::Render() {
+void bp::BeefApplication::render() {
     const int screenWidth = m_engine.GetGameWindow()->GetGameWidth();
     const int screenHeight = m_engine.GetGameWindow()->GetGameHeight();
 
@@ -140,18 +146,110 @@ void bp::BeefApplication::Render() {
     //m_engine.DrawModel(m_assetManager.GetModelAsset("Icosphere"), 1.0, nullptr);
 }
 
-void bp::BeefApplication::Run() {
-    while (m_engine.IsOpen() && !m_engine.IsKeyDown(ysKey::Code::Escape)) {
+void bp::BeefApplication::startRecording() {
+    m_recording = true;
+
+#ifdef BEEF_PLANET_ENABLE_VIDEO_CAPTURE
+    atg_dtv::Encoder::VideoSettings settings{};
+
+    // Output filename
+    settings.fname = "beef_planet_video_capture.mp4";
+    settings.inputWidth = m_engine.GetScreenWidth();
+    settings.inputHeight = m_engine.GetScreenHeight();
+    settings.width = settings.inputWidth;
+    settings.height = settings.inputHeight;
+    settings.hardwareEncoding = true;
+    settings.inputAlpha = true;
+    settings.bitRate = 40000000;
+
+    m_encoder.run(settings, 2);
+#endif /* BEEF_PLANET_ENABLE_VIDEO_CAPTURE */
+}
+
+void bp::BeefApplication::updateScreenSizeStability() {
+    m_screenResolution[m_screenResolutionIndex][0] = m_engine.GetScreenWidth();
+    m_screenResolution[m_screenResolutionIndex][1] = m_engine.GetScreenHeight();
+
+    m_screenResolutionIndex = (m_screenResolutionIndex + 1) % ScreenResolutionHistoryLength;
+}
+
+bool bp::BeefApplication::readyToRecord() {
+    const int w = m_screenResolution[0][0];
+    const int h = m_screenResolution[0][1];
+
+    if (w <= 0 && h <= 0) return false;
+    if ((w % 2) != 0 || (h % 2) != 0) return false;
+
+    for (int i = 1; i < ScreenResolutionHistoryLength; ++i) {
+        if (m_screenResolution[i][0] != w) return false;
+        if (m_screenResolution[i][1] != h) return false;
+    }
+
+    return true;
+}
+
+void bp::BeefApplication::stopRecording() {
+        m_recording = false;
+
+#ifdef BEEF_PLANET_ENABLE_VIDEO_CAPTURE
+    m_encoder.commit();
+    m_encoder.stop();
+#endif /* BEEF_PLANET_ENABLE_VIDEO_CAPTURE */
+}
+
+void bp::BeefApplication::recordFrame() {
+#ifdef BEEF_PLANET_ENABLE_VIDEO_CAPTURE
+    const int width = m_engine.GetScreenWidth();
+    const int height = m_engine.GetScreenHeight();
+
+    atg_dtv::Frame *frame = m_encoder.newFrame(true);
+    if (frame != nullptr && m_encoder.getError() == atg_dtv::Encoder::Error::None) {
+        m_engine.GetDevice()->ReadRenderTarget(m_engine.GetScreenRenderTarget(), frame->m_rgb);
+    }
+
+    m_encoder.submitFrame();
+#endif /* BEEF_PLANET_ENABLE_VIDEO_CAPTURE */
+}
+
+void bp::BeefApplication::run() {
+    while (m_engine.IsOpen() &&
+            (!m_engine.IsKeyDown(ysKey::Code::Escape) ||
+            !m_engine.GetGameWindow()->IsActive()))
+    {
         m_engine.StartFrame();
 
-        Process();
-        Render();
+        if (m_engine.ProcessKeyDown(ysKey::Code::F1) &&
+                m_engine.GetGameWindow()->IsActive())
+        {
+            if (!isRecording() && readyToRecord()) {
+                startRecording();
+            }
+            else if (isRecording()) {
+                stopRecording();
+            }
+        }
+
+        updateScreenSizeStability();
+        if (isRecording() && !readyToRecord()) {
+            stopRecording();
+        }
+
+        process();
+        render();
 
         m_engine.EndFrame();
+
+        if (isRecording()) {
+            recordFrame();
+        }
+    }
+
+    if (isRecording()) {
+        stopRecording();
     }
 }
 
-void bp::BeefApplication::Destroy() {
+void bp::BeefApplication::destroy() {
     m_shaderSet.Destroy();
 
     m_assetManager.Destroy();
