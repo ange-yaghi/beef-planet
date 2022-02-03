@@ -26,6 +26,8 @@ namespace bp {
 
             virtual void free();
 
+            static ysMatrix lineHelper(ysVector start, ysVector end);
+
         private:
             unsigned int m_id;
             bool m_deleted;

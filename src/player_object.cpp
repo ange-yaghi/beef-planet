@@ -4,6 +4,8 @@
 #include "../include/universe.h"
 
 bp::PlayerObject::PlayerObject() {
+    m_leftGrab = nullptr;
+    m_rightGrab = nullptr;
     /* void */
 }
 
@@ -61,8 +63,54 @@ void bp::PlayerObject::render() {
             nullptr,
             m_physics_component.m_transform.GetWorldTransform());
 
-    ysMatrix scaleMatrix = ysMath::ScaleTransform(ysMath::LoadVector(1.0, 2.0, 3.0));
-    ysMatrix translationMatrix = ysMath::TranslationTransform(ysMath::LoadVector(1.0, 2.0, 3.0));
+    ysVector leftHand;
+    ysVector rightHand;
+
+    if (m_leftGrab == nullptr) {
+        leftHand = ysMath::MatMult(m_mouseController.getOrientation(), 
+                ysMath::LoadVector(-m_size * 2.0, m_size * 5.0, m_size * 0.5));
+        leftHand = ysMath::Add(leftHand, m_physics_component.m_transform.GetWorldPosition());
+    }
+    else {
+        leftHand = m_leftGrab->getPhysicsComponent()->m_transform.GetWorldPosition();
+    }
+    if (m_rightGrab == nullptr) {
+        rightHand = ysMath::MatMult(m_mouseController.getOrientation(), 
+                ysMath::LoadVector(m_size * 2.0, m_size * 5.0, m_size * 0.5));
+        rightHand = ysMath::Add(rightHand, m_physics_component.m_transform.GetWorldPosition());
+    }
+    else {
+        rightHand = m_rightGrab->getPhysicsComponent()->m_transform.GetWorldPosition();
+    }
+
+    ysVector leftShoulder = ysMath::MatMult(m_mouseController.getOrientation(), 
+            ysMath::LoadVector(-m_size, 0.0, 0.0));
+    leftShoulder = ysMath::Add(leftShoulder, m_physics_component.m_transform.GetWorldPosition());
+    ysVector rightShoulder = ysMath::MatMult(m_mouseController.getOrientation(), 
+            ysMath::LoadVector(m_size, 0.0, 0.0));
+    rightShoulder = ysMath::Add(rightShoulder, m_physics_component.m_transform.GetWorldPosition());
+
+    m_universe->drawScaleModel(
+        m_model,
+        0.5,
+        nullptr,
+        GameObject::lineHelper(leftShoulder, leftHand));
+    m_universe->drawScaleModel(
+        m_model,
+        0.5,
+        nullptr,
+        GameObject::lineHelper(rightShoulder, rightHand));
+    m_universe->drawScaleModel(
+        m_model,
+        0.5,
+        nullptr,
+        ysMath::TranslationTransform(leftShoulder));
+    m_universe->drawScaleModel(
+        m_model,
+        0.5,
+        nullptr,
+        ysMath::TranslationTransform(rightShoulder));
+
 
 
     dbasic::Light glow;

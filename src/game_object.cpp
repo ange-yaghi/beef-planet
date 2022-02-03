@@ -33,3 +33,23 @@ void bp::GameObject::render() {
 void bp::GameObject::free() {
     /* void */
 }
+
+ysMatrix bp::GameObject::lineHelper(ysVector start, ysVector end)
+{
+    ysVector distance = ysMath::Sub(end, start);
+
+    ysVector axis1 = ysMath::Normalize(ysMath::Cross(distance, ysMath::Constants::YAxis));
+    ysVector axis2 = ysMath::Normalize(ysMath::Cross(distance, axis1));
+
+
+    ysMatrix scaleMatrix = ysMath::Transpose(
+        ysMath::LoadMatrix(
+            distance, axis1, axis2, ysMath::Constants::IdentityRow4));
+    ysMatrix translationMatrix = ysMath::TranslationTransform(
+        ysMath::Mul(
+            ysMath::Add(start, end),
+            ysMath::LoadScalar(0.5)));
+    return ysMath::MatMult(translationMatrix, scaleMatrix);
+}
+
+

@@ -42,6 +42,7 @@ void bp::MouseController::process(const ysVector &planet_position) {
     ysVector camera_radius = ysMath::LoadVector(0, -m_zoom, 0, 0);
     m_camera_transform = ysMath::MatMult(m_camera_transform, x_rot);
     m_camera_transform = ysMath::MatMult(m_camera_transform, y_rot);
+    // ToDo Normalize Camera Transform
     ysVector camera_relative_position = ysMath::MatMult(m_camera_transform, camera_radius);
 
     ysVector camera_up = ysMath::MatMult(m_camera_transform, ysMath::Constants::ZAxis);
