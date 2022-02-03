@@ -10,22 +10,24 @@
 
 namespace bp {
     class PlayerObject : public PhysicalObject {
-        public:
-            PlayerObject();
-            virtual ~PlayerObject();
+    public:
+        PlayerObject();
+        virtual ~PlayerObject();
 
-            virtual void initialize(
-                    dbasic::DeltaEngine *engine,
-                    dbasic::DefaultShaders *shaders,
-                    Universe *universe);
+        virtual void initialize(
+            dbasic::DeltaEngine* engine,
+            dbasic::DefaultShaders* shaders,
+            Universe* universe);
 
-            virtual void process(float dt);
-            virtual void render();
+        virtual void process(float dt);
+        virtual void render();
 
-            virtual void updateMass(float mass);
+        virtual void updateMass(float mass);
 
-        private:
-            MouseController m_mouseController;
+    private:
+        MouseController m_mouseController;
+        PhysicalObject *m_leftGrab;
+        PhysicalObject *m_rightGrab;
     };
 } /* namespace bp */
 

@@ -61,6 +61,10 @@ void bp::PlayerObject::render() {
             nullptr,
             m_physics_component.m_transform.GetWorldTransform());
 
+    ysMatrix scaleMatrix = ysMath::ScaleTransform(ysMath::LoadVector(1.0, 2.0, 3.0));
+    ysMatrix translationMatrix = ysMath::TranslationTransform(ysMath::LoadVector(1.0, 2.0, 3.0));
+
+
     dbasic::Light glow;
     glow.Active = 1;
     glow.Attenuation0 = 0.0f;
