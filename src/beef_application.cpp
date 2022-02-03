@@ -153,7 +153,7 @@ void bp::BeefApplication::startRecording() {
     atg_dtv::Encoder::VideoSettings settings{};
 
     // Output filename
-    settings.fname = "beef_planet_video_capture.mp4";
+    settings.fname = "../workspace/captures/beef_planet_video_capture.mp4";
     settings.inputWidth = m_engine.GetScreenWidth();
     settings.inputHeight = m_engine.GetScreenHeight();
     settings.width = settings.inputWidth;
@@ -226,6 +226,15 @@ void bp::BeefApplication::run() {
             }
             else if (isRecording()) {
                 stopRecording();
+            }
+        }
+
+        if (m_engine.ProcessKeyDown(ysKey::Code::N1)) {
+            if (m_engine.GetGameWindow()->GetWindowStyle() == ysWindow::WindowStyle::Windowed) {
+                m_engine.GetGameWindow()->SetWindowStyle(ysWindow::WindowStyle::Fullscreen);
+            }
+            else {
+                m_engine.GetGameWindow()->SetWindowStyle(ysWindow::WindowStyle::Windowed);
             }
         }
 

@@ -45,6 +45,8 @@ namespace bp {
 
             int getGameObjectCount() const { return m_game_objects.size(); }
 
+            GameObject *rayCast(const ysVector &d, const ysVector &p0, uint64_t tags);
+
         private:
             void processSpawnQueue();
             void worldDestroyer();

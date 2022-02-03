@@ -6,7 +6,9 @@
 bp::PlayerObject::PlayerObject() {
     m_leftGrab = nullptr;
     m_rightGrab = nullptr;
-    /* void */
+
+    clearTags();
+    addTag(GameObject::TagPlayer);
 }
 
 bp::PlayerObject::~PlayerObject() {
@@ -53,6 +55,32 @@ void bp::PlayerObject::process(float dt) {
 
     m_mouseController.process(
             getPhysicsComponent()->m_transform.GetWorldPosition());
+
+    if (m_engine->IsMouseButtonDown(ysMouse::Button::Left)) {
+        GameObject *target = m_universe->rayCast(
+            ysMath::Normalize(
+                ysMath::Sub(m_shaders->GetCameraTarget(), m_shaders->GetCameraPosition())),
+            m_shaders->GetCameraPosition(),
+            TagPlanet);
+        if (target != nullptr) {
+            target->setDebugHighlighted(true);
+            m_leftGrab = static_cast<PhysicalObject *>(target);
+        }
+    }
+    else if (m_engine->IsMouseButtonDown(ysMouse::Button::Right)) {
+        GameObject *target = m_universe->rayCast(
+            ysMath::Normalize(
+                ysMath::Sub(m_shaders->GetCameraTarget(), m_shaders->GetCameraPosition())),
+            m_shaders->GetCameraPosition(),
+            TagPlanet);
+        if (target != nullptr) {
+            target->setDebugHighlighted(true);
+            m_rightGrab = static_cast<PhysicalObject *>(target);
+        }
+    }
+
+    if (m_rightGrab != nullptr && m_rightGrab->isDeleted()) m_rightGrab = nullptr;
+    if (m_leftGrab != nullptr && m_leftGrab->isDeleted()) m_leftGrab = nullptr;
 }
 
 void bp::PlayerObject::render() {
@@ -70,7 +98,7 @@ void bp::PlayerObject::render() {
     ysVector rightHand;
 
     if (m_leftGrab == nullptr) {
-        leftHand = ysMath::MatMult(m_mouseController.getOrientation(), 
+        leftHand = ysMath::MatMult(m_mouseController.getOrientation(),
                 ysMath::LoadVector(-m_size * 2.0, m_size * 5.0, m_size * 0.5));
         leftHand = ysMath::Add(leftHand, m_physics_component.m_transform.GetWorldPosition());
     }
@@ -78,7 +106,7 @@ void bp::PlayerObject::render() {
         leftHand = m_leftGrab->getPhysicsComponent()->m_transform.GetWorldPosition();
     }
     if (m_rightGrab == nullptr) {
-        rightHand = ysMath::MatMult(m_mouseController.getOrientation(), 
+        rightHand = ysMath::MatMult(m_mouseController.getOrientation(),
                 ysMath::LoadVector(m_size * 2.0, m_size * 5.0, m_size * 0.5));
         rightHand = ysMath::Add(rightHand, m_physics_component.m_transform.GetWorldPosition());
     }
@@ -100,25 +128,25 @@ void bp::PlayerObject::render() {
             ysMath::LoadVector(m_size, 0.0, 0.0)),
             m_physics_component.m_transform.GetWorldPosition());
 
-    m_universe->drawScaleModel(m_model, 0.5, nullptr, 
+    m_universe->drawScaleModel(m_model, 0.5, nullptr,
             GameObject::lineHelper(leftShoulder, leftElbow));
-    m_universe->drawScaleModel(m_model, 0.5, nullptr, 
+    m_universe->drawScaleModel(m_model, 0.5, nullptr,
             GameObject::lineHelper(rightShoulder, rightElbow));
-    m_universe->drawScaleModel(m_model, 0.5, nullptr, 
+    m_universe->drawScaleModel(m_model, 0.5, nullptr,
             GameObject::lineHelper(leftElbow, leftHand));
-    m_universe->drawScaleModel(m_model, 0.5, nullptr, 
+    m_universe->drawScaleModel(m_model, 0.5, nullptr,
             GameObject::lineHelper(rightElbow, rightHand));
-    m_universe->drawScaleModel(m_model, 0.5, nullptr, 
+    m_universe->drawScaleModel(m_model, 0.5, nullptr,
             ysMath::TranslationTransform(leftShoulder));
-    m_universe->drawScaleModel(m_model, 0.5, nullptr, 
+    m_universe->drawScaleModel(m_model, 0.5, nullptr,
             ysMath::TranslationTransform(rightShoulder));
-    m_universe->drawScaleModel(m_model, 0.5, nullptr, 
+    m_universe->drawScaleModel(m_model, 0.5, nullptr,
             ysMath::TranslationTransform(leftElbow));
-    m_universe->drawScaleModel(m_model, 0.5, nullptr, 
+    m_universe->drawScaleModel(m_model, 0.5, nullptr,
             ysMath::TranslationTransform(rightElbow));
-    m_universe->drawScaleModel(m_model, 1.0, nullptr, 
+    m_universe->drawScaleModel(m_model, 1.0, nullptr,
             ysMath::TranslationTransform(leftHand));
-    m_universe->drawScaleModel(m_model, 1.0, nullptr, 
+    m_universe->drawScaleModel(m_model, 1.0, nullptr,
             ysMath::TranslationTransform(rightHand));
 
     dbasic::Light glow;

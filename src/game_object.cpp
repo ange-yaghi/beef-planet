@@ -2,10 +2,12 @@
 
 bp::GameObject::GameObject() {
     m_id = 0;
+    m_tags = 0;
     m_deleted = false;
     m_engine = nullptr;
     m_shaders = nullptr;
     m_universe = nullptr;
+    m_debugHighlighted = false;
 }
 
 bp::GameObject::~GameObject() {
@@ -20,6 +22,10 @@ void bp::GameObject::initialize(
     m_engine = engine;
     m_shaders = shaders;
     m_universe = universe;
+}
+
+bool bp::GameObject::rayTest(const ysVector &d, const ysVector &p0, float *s) {
+    return false;
 }
 
 void bp::GameObject::process(float dt) {

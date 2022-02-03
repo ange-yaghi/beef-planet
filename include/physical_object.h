@@ -29,6 +29,7 @@ namespace bp {
             virtual void updateMass(float mass);
             float getSize() { return m_size; }
 
+            virtual bool rayTest(const ysVector &d, const ysVector &p0, float *s);
             virtual void free();
 
         protected:

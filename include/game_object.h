@@ -7,6 +7,10 @@ namespace bp {
     class Universe;
     class GameObject {
         public:
+            const uint64_t TagPlayer = 0x1;
+            const uint64_t TagPlanet = 0x2;
+
+        public:
             GameObject();
             virtual ~GameObject();
 
@@ -24,18 +28,31 @@ namespace bp {
             void scheduleDeletion() { m_deleted = true; }
             bool isDeleted() { return m_deleted; }
 
+            virtual bool rayTest(const ysVector &d, const ysVector &p0, float *s);
+
             virtual void free();
 
             static ysMatrix lineHelper(ysVector start, ysVector end);
+
+            void clearTags() { m_tags = 0; }
+            void addTag(uint64_t tag) { m_tags |= tag; }
+            bool hasTag(uint64_t tag) { return (m_tags & tag) > 0; }
+
+            void setDebugHighlighted(bool highlighted) { m_debugHighlighted = highlighted; }
 
         private:
             unsigned int m_id;
             bool m_deleted;
 
+            uint64_t m_tags;
+
         protected:
             dbasic::DeltaEngine* m_engine;
             dbasic::DefaultShaders* m_shaders;
             Universe* m_universe;
+
+        protected:
+            bool m_debugHighlighted;
     };
 } /* namespace bp */
 

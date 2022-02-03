@@ -61,6 +61,25 @@ void bp::Universe::addScaleLight(dbasic::Light& light) {
     m_shaders->AddLight(light);
 }
 
+bp::GameObject *bp::Universe::rayCast(const ysVector &d, const ysVector &p0, uint64_t tags) {
+    float min_s = FLT_MAX;
+    GameObject *closest = nullptr;
+    for (GameObject *object : m_game_objects) {
+        if (!object->hasTag(tags)) {
+            continue;
+        }
+
+        float s;
+        const bool intersects = object->rayTest(d, p0, &s);
+        if (intersects && s < min_s) {
+            closest = object;
+            min_s = s;
+        }
+    }
+
+    return closest;
+}
+
 void bp::Universe::processSpawnQueue() {
     for (GameObject* current_spawn : m_spawn_queue) {
         m_game_objects.push_back(current_spawn);
