@@ -2,7 +2,7 @@
 
 bp::GameObject::GameObject() {
     m_id = 0;
-    m_for_deletion = false;
+    m_deleted = false;
     m_engine = nullptr;
     m_shaders = nullptr;
     m_universe = nullptr;

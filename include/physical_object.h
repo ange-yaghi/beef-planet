@@ -24,7 +24,7 @@ namespace bp {
 
             void setModel(dbasic::ModelAsset* asset) { m_model = asset; }
 
-            PhysicsComponent* getPhysicsComponent() { return &m_physics_component; }
+            PhysicsComponent *getPhysicsComponent() { return &m_physics_component; }
 
             virtual void updateMass(float mass);
             float getSize() { return m_size; }

@@ -21,14 +21,14 @@ namespace bp {
             virtual void process(float dt);
             virtual void render();
 
-            void destroyMe() { m_for_deletion = true; }
-            bool deletionFlag() { return m_for_deletion; }
+            void scheduleDeletion() { m_deleted = true; }
+            bool isDeleted() { return m_deleted; }
 
             virtual void free();
 
         private:
             unsigned int m_id;
-            bool m_for_deletion;
+            bool m_deleted;
 
         protected:
             dbasic::DeltaEngine* m_engine;

@@ -32,27 +32,48 @@ void bp::GravitySimulator::generateForces() {
 
     const float inverseG = 1.0 / m_G;
     for (int i = 0; i < m_components.size(); i++) {
+        if (m_components[i]->isMassless()) continue;
+
         for (int j = i + 1; j < m_components.size(); j++) {
-            ysVector inverse_mass_mult = ysMath::LoadScalar(-m_components[i]->getInverseMass() * m_components[j]->getInverseMass() * inverseG);
-            ysVector delta = ysMath::Sub(m_components[i]->m_transform.GetWorldPosition(), m_components[j]->m_transform.GetWorldPosition());
+            if (m_components[j]->isMassless()) continue;
+
+            const float inverseMass0 = m_components[i]->getInverseMass();
+            const float inverseMass1 = m_components[j]->getInverseMass();
+            const float size0 = m_components[i]->getParent()->getSize();
+            const float size1 = m_components[j]->getParent()->getSize();
+
+            ysVector inverseMassMult =
+                ysMath::LoadScalar(
+                        -inverseMass0 * inverseMass1 * inverseG);
+            ysVector delta = ysMath::Sub(
+                    m_components[i]->m_transform.GetWorldPosition(),
+                    m_components[j]->m_transform.GetWorldPosition());
             ysVector magnitude = ysMath::Magnitude(delta);
             // = |r| ^ 3 / (m1 * m2)
-            ysVector tempMath = ysMath::Mul(magnitude, ysMath::Mul(magnitude, ysMath::Mul(magnitude, inverse_mass_mult)));
+            ysVector tempMath = ysMath::Mul(
+                    magnitude,
+                    ysMath::Mul(magnitude, ysMath::Mul(magnitude, inverseMassMult)));
             // = r * m1 * m2 / |r| ^ 3
             ysVector force = ysMath::Div(delta, tempMath);
 
-            const float distance = ysMath::GetScalar(magnitude) - (m_components[i]->getParent()->getSize() + m_components[j]->getParent()->getSize());
+            const float distance =
+                ysMath::GetScalar(magnitude) - (size0 + size1);
             if (distance <= 0) { // Elastic collision from objects
                 m_components[i]->addIntersection(m_components[j]->getParent());
                 m_components[j]->addIntersection(m_components[i]->getParent());
                 // = kx = r * d * k / |r|
-                ysVector springForce = ysMath::Mul(ysMath::Div(delta, magnitude), ysMath::LoadScalar(distance * 5000.0));
+                ysVector springForce = ysMath::Mul(
+                        ysMath::Div(delta, magnitude), ysMath::LoadScalar(distance * 5000.0));
                 m_components[i]->forceAdd(ysMath::Negate(springForce));
                 m_components[j]->forceAdd(springForce);
             }
             else { // Gravity from interacting objects
-                m_components[i]->forceAdd(force);
-                m_components[j]->forceAdd(ysMath::Negate(force));
+                if (m_components[i]->isGravityEnabled()
+                        && m_components[j]->isGravityEnabled())
+                {
+                    m_components[i]->forceAdd(force);
+                    m_components[j]->forceAdd(ysMath::Negate(force));
+                }
             }
         }
     }
@@ -70,7 +91,7 @@ void bp::GravitySimulator::deregisterComponent(PhysicsComponent *component) {
             break;
         }
     }
-    
+
     assert(index != -1);
 
     m_components[index] = m_components.back();

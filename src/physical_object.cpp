@@ -50,7 +50,7 @@ void bp::PhysicalObject::process(float dt) {
                 ysMath::GetScalar(ysMath::Dot(normal, velocityDirection));
 
             if (normalDotVel > 0.5) {
-                object->destroyMe();
+                object->scheduleDeletion();
                 const float currentMass = m_physics_component.getMass();
                 updateMass(currentMass + component->getMass());
             }
@@ -63,7 +63,7 @@ void bp::PhysicalObject::render() {
     m_shaders->SetBaseColor(m_color);
     m_shaders->SetSpecularRoughness(1.0f);
     m_shaders->SetColorReplace(true);
-    m_universe->DrawScaleModel(
+    m_universe->drawScaleModel(
             m_model,
             m_size,
             nullptr,

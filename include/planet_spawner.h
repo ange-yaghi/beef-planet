@@ -13,17 +13,22 @@ namespace bp {
             PlanetSpawner();
             virtual ~PlanetSpawner();
 
-            virtual void initialize(dbasic::DeltaEngine* engine, dbasic::DefaultShaders* shaders, Universe* universe);
+            virtual void initialize(
+                    dbasic::DeltaEngine *engine,
+                    dbasic::DefaultShaders *shaders,
+                    Universe *universe);
 
             virtual void process(float dt);
             virtual void render();
 
-            void setModel(dbasic::ModelAsset* asset) { m_model = asset; }
+            void setModel(dbasic::ModelAsset *asset) { m_model = asset; }
 
         private:
-            void planetCreation();
+            void createPlanet();
+            void createDust();
+
             float m_cooldown;
-            dbasic::ModelAsset* m_model;
+            dbasic::ModelAsset *m_model;
     };
 } /* namespace bp */
 

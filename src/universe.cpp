@@ -73,7 +73,7 @@ void bp::Universe::worldDestroyer() {
     int j = 0;
     for (int i = 0; i < gameObjectCount; ++i) {
         m_game_objects[j] = m_game_objects[i];
-        if (!m_game_objects[i]->deletionFlag()) {
+        if (!m_game_objects[i]->isDeleted()) {
             ++j;
         }
         else {

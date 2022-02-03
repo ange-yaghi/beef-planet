@@ -1,4 +1,5 @@
 #include "../include/player_object.h"
+
 #include "../include/mouse_controller.h"
 #include "../include/universe.h"
 
@@ -16,7 +17,7 @@ void bp::PlayerObject::initialize(
         Universe* universe)
 {
     PhysicalObject::initialize(engine, shaders, universe);
-    m_mouse_controller.initialize(engine, shaders, universe);
+    m_mouseController.initialize(engine, shaders, universe);
     updateMass(100.0);
     m_color = ysColor::srgbiToLinear(0xAA, 0xAA, 0xFF);
 }
@@ -45,7 +46,7 @@ void bp::PlayerObject::process(float dt) {
         getPhysicsComponent()->forceAdd(movement);
     }
 
-    m_mouse_controller.process(
+    m_mouseController.process(
             getPhysicsComponent()->m_transform.GetWorldPosition());
 }
 
@@ -54,7 +55,7 @@ void bp::PlayerObject::render() {
     m_shaders->SetBaseColor(m_color);
     m_shaders->SetSpecularRoughness(1.0f);
     m_shaders->SetColorReplace(true);
-    m_universe->DrawScaleModel(
+    m_universe->drawScaleModel(
             m_model,
             m_size,
             nullptr,
@@ -75,6 +76,6 @@ void bp::PlayerObject::render() {
 
 void bp::PlayerObject::updateMass(float mass) {
     PhysicalObject::updateMass(mass);
-    m_mouse_controller.setZoom(m_size * 7);
+    m_mouseController.setZoom(m_size * 7);
     m_universe->setScale(1.0 / m_size);
 }
