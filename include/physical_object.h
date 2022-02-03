@@ -10,30 +10,33 @@
 namespace bp {
 
     class PhysicalObject : public GameObject {
-    public:
-        PhysicalObject();
-        virtual ~PhysicalObject();
+        public:
+            PhysicalObject();
+            virtual ~PhysicalObject();
 
-        virtual void initialize(dbasic::DeltaEngine* engine, dbasic::DefaultShaders* shaders, Universe* universe);
+            virtual void initialize(
+                    dbasic::DeltaEngine* engine,
+                    dbasic::DefaultShaders* shaders,
+                    Universe* universe);
 
-        virtual void process(float dt);
-        virtual void render();
+            virtual void process(float dt);
+            virtual void render();
 
-        void setModel(dbasic::ModelAsset* asset) { m_model = asset; }
+            void setModel(dbasic::ModelAsset* asset) { m_model = asset; }
 
-        PhysicsComponent* getPhysicsComponent() { return &m_physics_component; }
+            PhysicsComponent* getPhysicsComponent() { return &m_physics_component; }
 
-        virtual void updateMass(float mass);
-        float getSize() { return m_size; }
+            virtual void updateMass(float mass);
+            float getSize() { return m_size; }
 
-        virtual void free();
+            virtual void free();
 
-    protected:
-        PhysicsComponent m_physics_component;
+        protected:
+            PhysicsComponent m_physics_component;
 
-        float m_size;
-        dbasic::ModelAsset* m_model;
-        ysVector m_color;
+            float m_size;
+            dbasic::ModelAsset* m_model;
+            ysVector m_color;
     };
 
 } /* namespace bp */

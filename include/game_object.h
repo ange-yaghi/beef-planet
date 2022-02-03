@@ -4,37 +4,37 @@
 #include "delta.h"
 
 namespace bp {
-
     class Universe;
-
     class GameObject {
-    public:
-        GameObject();
-        virtual ~GameObject();
+        public:
+            GameObject();
+            virtual ~GameObject();
 
-        virtual void initialize(dbasic::DeltaEngine *engine, dbasic::DefaultShaders* shaders, Universe *universe);
+            virtual void initialize(
+                    dbasic::DeltaEngine *engine,
+                    dbasic::DefaultShaders *shaders,
+                    Universe *universe);
 
-        unsigned int getId() { return m_id; }
-        void setId(unsigned int id) { m_id = id; }
+            unsigned int getId() { return m_id; }
+            void setId(unsigned int id) { m_id = id; }
 
-        virtual void process(float dt);
-        virtual void render();
+            virtual void process(float dt);
+            virtual void render();
 
-        void destroyMe() { m_for_deletion = true; }
-        bool deletionFlag() { return m_for_deletion; }
+            void destroyMe() { m_for_deletion = true; }
+            bool deletionFlag() { return m_for_deletion; }
 
-        virtual void free();
+            virtual void free();
 
-    private:
-        unsigned int m_id;
-        bool m_for_deletion;
+        private:
+            unsigned int m_id;
+            bool m_for_deletion;
 
-    protected:
-        dbasic::DeltaEngine* m_engine;
-        dbasic::DefaultShaders* m_shaders;
-        Universe* m_universe;
+        protected:
+            dbasic::DeltaEngine* m_engine;
+            dbasic::DefaultShaders* m_shaders;
+            Universe* m_universe;
     };
-
 } /* namespace bp */
 
 #endif /* BEEF_PLANET_GAME_OBJECT_H */

@@ -47,4 +47,5 @@ namespace bp {
         bool m_recording;
     };
 }  /* namespace bp */
+
 #endif /* BEEF_APPLICATION_H */

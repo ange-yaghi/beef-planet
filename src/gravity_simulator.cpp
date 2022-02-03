@@ -1,20 +1,18 @@
-#include "..\include\gravity_simulator.h"
-#include "..\include\physical_object.h"
+#include "../include/gravity_simulator.h"
+
+#include "../include/physical_object.h"
 
 #include <assert.h>
 
-bp::GravitySimulator::GravitySimulator()
-{
+bp::GravitySimulator::GravitySimulator() {
     m_G = 0.3;
 }
 
-bp::GravitySimulator::~GravitySimulator()
-{
-
+bp::GravitySimulator::~GravitySimulator() {
+    /* void */
 }
 
-void bp::GravitySimulator::integrate(float dt)
-{
+void bp::GravitySimulator::integrate(float dt) {
     for (PhysicsComponent* component : m_components) {
         component->integrate(dt);
     }
@@ -27,13 +25,12 @@ void bp::GravitySimulator::clearForces() {
     }
 }
 
-void bp::GravitySimulator::generateForces()
-{
+void bp::GravitySimulator::generateForces() {
     for (PhysicsComponent* componentA : m_components) {
         assert(componentA->getInverseMass() != 0);
     }
 
-    float inverseG = 1.0 / m_G;
+    const float inverseG = 1.0 / m_G;
     for (int i = 0; i < m_components.size(); i++) {
         for (int j = i + 1; j < m_components.size(); j++) {
             ysVector inverse_mass_mult = ysMath::LoadScalar(-m_components[i]->getInverseMass() * m_components[j]->getInverseMass() * inverseG);
@@ -44,7 +41,7 @@ void bp::GravitySimulator::generateForces()
             // = r * m1 * m2 / |r| ^ 3
             ysVector force = ysMath::Div(delta, tempMath);
 
-            float  distance = ysMath::GetScalar(magnitude) - (m_components[i]->getParent()->getSize() + m_components[j]->getParent()->getSize());
+            const float distance = ysMath::GetScalar(magnitude) - (m_components[i]->getParent()->getSize() + m_components[j]->getParent()->getSize());
             if (distance <= 0) { // Elastic collision from objects
                 m_components[i]->addIntersection(m_components[j]->getParent());
                 m_components[j]->addIntersection(m_components[i]->getParent());
@@ -61,13 +58,11 @@ void bp::GravitySimulator::generateForces()
     }
 }
 
-void bp::GravitySimulator::registerComponent(PhysicsComponent *component)
-{
+void bp::GravitySimulator::registerComponent(PhysicsComponent *component) {
     m_components.push_back(component);
 }
 
-void bp::GravitySimulator::deregisterComponent(PhysicsComponent *component)
-{
+void bp::GravitySimulator::deregisterComponent(PhysicsComponent *component) {
     int index = -1;
     for (int i = 0; i < m_components.size(); ++i) {
         if (m_components[i] == component) {

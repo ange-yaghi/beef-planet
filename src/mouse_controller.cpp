@@ -1,8 +1,7 @@
 #include "..\include\mouse_controller.h"
 #include "..\include\universe.h"
 
-bp::MouseController::MouseController()
-{
+bp::MouseController::MouseController() {
     m_engine = nullptr;
     m_shaders = nullptr;
     m_mouse_x = 0;
@@ -13,11 +12,14 @@ bp::MouseController::MouseController()
     m_camera_transform = ysMath::LoadIdentity();
 }
 
-bp::MouseController::~MouseController()
-{
+bp::MouseController::~MouseController() {
+    /* void */
 }
 
-void bp::MouseController::initialize(dbasic::DeltaEngine *engine, dbasic::DefaultShaders *shaders, Universe* universe)
+void bp::MouseController::initialize(
+        dbasic::DeltaEngine *engine,
+        dbasic::DefaultShaders *shaders,
+        Universe* universe)
 {
     m_engine = engine;
     m_universe = universe;
@@ -27,17 +29,16 @@ void bp::MouseController::initialize(dbasic::DeltaEngine *engine, dbasic::Defaul
     m_pre_y = m_mouse_y;
 }
 
-void bp::MouseController::process(const ysVector &planet_position)
-{
+void bp::MouseController::process(const ysVector &planet_position) {
     int x;
     int y;
     getMouseChange(&x, &y);
-    float rho = (float) y * ysMath::Constants::PI / 2000;
-    float phi = (float) x * ysMath::Constants::PI / 2000;
+    const float rho = (float)y * ysMath::Constants::PI / 2000;
+    const float phi = (float)x * ysMath::Constants::PI / 2000;
 
     ysMatrix x_rot = ysMath::RotationTransform(ysMath::Constants::ZAxis, -phi);
     ysMatrix y_rot = ysMath::RotationTransform(ysMath::Constants::XAxis, -rho);
-    
+
     ysVector camera_radius = ysMath::LoadVector(0, -m_zoom, 0, 0);
     m_camera_transform = ysMath::MatMult(m_camera_transform, x_rot);
     m_camera_transform = ysMath::MatMult(m_camera_transform, y_rot);
@@ -47,7 +48,7 @@ void bp::MouseController::process(const ysVector &planet_position)
 
     ysVector camera_position = ysMath::Add(planet_position, camera_relative_position);
     camera_position = ysMath::Mul(camera_position, ysMath::LoadScalar(m_universe->getScale()));
-    
+
     ysVector camera_target = ysMath::Add(planet_position, ysMath::Mul(camera_up, ysMath::LoadScalar(m_zoom / 5)));
     camera_target = ysMath::Mul(camera_target, ysMath::LoadScalar(m_universe->getScale()));
 
@@ -57,8 +58,7 @@ void bp::MouseController::process(const ysVector &planet_position)
     m_shaders->CalculateCamera();
 }
 
-void bp::MouseController::getMouseChange(int *x, int *y)
-{
+void bp::MouseController::getMouseChange(int *x, int *y) {
     m_engine->GetMousePos(&m_mouse_x, &m_mouse_y);
     *x = m_mouse_x - m_pre_x;
     *y = m_mouse_y - m_pre_y;
@@ -66,6 +66,6 @@ void bp::MouseController::getMouseChange(int *x, int *y)
     m_pre_y = m_mouse_y;
 }
 
-void bp::MouseController::destroy()
-{
+void bp::MouseController::destroy() {
+    /* void */
 }
