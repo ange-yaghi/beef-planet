@@ -47,6 +47,9 @@ void bp::PlayerObject::process(float dt) {
                 ysMath::LoadScalar(20.0 * PhysicalObject::m_physics_component.getMass()));
         getPhysicsComponent()->forceAdd(movement);
     }
+    else if (m_engine->IsKeyDown(ysKey::Code::M)) {
+        updateMass(1000);
+    }
 
     m_mouseController.process(
             getPhysicsComponent()->m_transform.GetWorldPosition());
@@ -83,35 +86,40 @@ void bp::PlayerObject::render() {
         rightHand = m_rightGrab->getPhysicsComponent()->m_transform.GetWorldPosition();
     }
 
-    ysVector leftShoulder = ysMath::MatMult(m_mouseController.getOrientation(), 
-            ysMath::LoadVector(-m_size, 0.0, 0.0));
-    leftShoulder = ysMath::Add(leftShoulder, m_physics_component.m_transform.GetWorldPosition());
-    ysVector rightShoulder = ysMath::MatMult(m_mouseController.getOrientation(), 
-            ysMath::LoadVector(m_size, 0.0, 0.0));
-    rightShoulder = ysMath::Add(rightShoulder, m_physics_component.m_transform.GetWorldPosition());
+    ysVector leftElbow = ysMath::Add(ysMath::MatMult(m_mouseController.getOrientation(),
+            ysMath::LoadVector(-m_size * 2.0, -m_size * 0.25, -m_size * 0.25)),
+            m_physics_component.m_transform.GetWorldPosition());
+    ysVector rightElbow = ysMath::Add(ysMath::MatMult(m_mouseController.getOrientation(),
+            ysMath::LoadVector(m_size * 2.0, -m_size * 0.25, -m_size * 0.25)),
+            m_physics_component.m_transform.GetWorldPosition());
 
-    m_universe->drawScaleModel(
-        m_model,
-        0.5,
-        nullptr,
-        GameObject::lineHelper(leftShoulder, leftHand));
-    m_universe->drawScaleModel(
-        m_model,
-        0.5,
-        nullptr,
-        GameObject::lineHelper(rightShoulder, rightHand));
-    m_universe->drawScaleModel(
-        m_model,
-        0.5,
-        nullptr,
-        ysMath::TranslationTransform(leftShoulder));
-    m_universe->drawScaleModel(
-        m_model,
-        0.5,
-        nullptr,
-        ysMath::TranslationTransform(rightShoulder));
+    ysVector leftShoulder = ysMath::Add(ysMath::MatMult(m_mouseController.getOrientation(),
+            ysMath::LoadVector(-m_size, 0.0, 0.0)),
+            m_physics_component.m_transform.GetWorldPosition());
+    ysVector rightShoulder = ysMath::Add(ysMath::MatMult(m_mouseController.getOrientation(),
+            ysMath::LoadVector(m_size, 0.0, 0.0)),
+            m_physics_component.m_transform.GetWorldPosition());
 
-
+    m_universe->drawScaleModel(m_model, 0.5, nullptr, 
+            GameObject::lineHelper(leftShoulder, leftElbow));
+    m_universe->drawScaleModel(m_model, 0.5, nullptr, 
+            GameObject::lineHelper(rightShoulder, rightElbow));
+    m_universe->drawScaleModel(m_model, 0.5, nullptr, 
+            GameObject::lineHelper(leftElbow, leftHand));
+    m_universe->drawScaleModel(m_model, 0.5, nullptr, 
+            GameObject::lineHelper(rightElbow, rightHand));
+    m_universe->drawScaleModel(m_model, 0.5, nullptr, 
+            ysMath::TranslationTransform(leftShoulder));
+    m_universe->drawScaleModel(m_model, 0.5, nullptr, 
+            ysMath::TranslationTransform(rightShoulder));
+    m_universe->drawScaleModel(m_model, 0.5, nullptr, 
+            ysMath::TranslationTransform(leftElbow));
+    m_universe->drawScaleModel(m_model, 0.5, nullptr, 
+            ysMath::TranslationTransform(rightElbow));
+    m_universe->drawScaleModel(m_model, 1.0, nullptr, 
+            ysMath::TranslationTransform(leftHand));
+    m_universe->drawScaleModel(m_model, 1.0, nullptr, 
+            ysMath::TranslationTransform(rightHand));
 
     dbasic::Light glow;
     glow.Active = 1;
