@@ -49,11 +49,11 @@ void bp::GravitySimulator::generateForces() {
                     m_components[i]->m_transform.GetWorldPosition(),
                     m_components[j]->m_transform.GetWorldPosition());
             ysVector magnitude = ysMath::Magnitude(delta);
-            // = |r| ^ 3 / (m1 * m2)
+            // = |r| ^ 3 / (m1 * m2 * G)
             ysVector tempMath = ysMath::Mul(
                     magnitude,
                     ysMath::Mul(magnitude, ysMath::Mul(magnitude, inverseMassMult)));
-            // = r * m1 * m2 / |r| ^ 3
+            // = r * G * m1 * m2 / |r| ^ 3
             ysVector force = ysMath::Div(delta, tempMath);
 
             const float distance =

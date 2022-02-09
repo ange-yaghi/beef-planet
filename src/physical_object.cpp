@@ -50,7 +50,7 @@ void bp::PhysicalObject::process(float dt) {
             const float normalDotVel =
                 ysMath::GetScalar(ysMath::Dot(normal, velocityDirection));
 
-            if (normalDotVel > 0.5) {
+            if (normalDotVel > 0.7) {
                 object->scheduleDeletion();
                 const float currentMass = m_physics_component.getMass();
                 updateMass(currentMass + component->getMass());
