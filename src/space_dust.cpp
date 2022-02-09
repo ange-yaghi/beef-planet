@@ -31,7 +31,6 @@ void bp::SpaceDust::render() {
     m_shaders->SetColorReplace(true);
     m_universe->drawScaleModel(
             m_model,
-            m_size,
             nullptr,
             m_physics_component.m_transform.GetWorldTransform());
 }

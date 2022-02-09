@@ -38,7 +38,6 @@ void bp::Universe::render() {
 
 void bp::Universe::drawScaleModel(
         dbasic::ModelAsset *model,
-        double size,
         ysTexture *texture,
         const ysMatrix &transform)
 {
@@ -51,7 +50,7 @@ void bp::Universe::drawScaleModel(
     scaledTransform = ysMath::Transpose(scaledTransform);
     scaledTransform = ysMath::MatMult(
         scaledTransform,
-        ysMath::ScaleTransform(ysMath::LoadScalar(size * m_scale)));
+        ysMath::ScaleTransform(ysMath::LoadScalar(m_scale)));
     m_shaders->SetObjectTransform(scaledTransform);
     m_engine->DrawModel(m_shaders->GetRegularFlags(), model);
 }

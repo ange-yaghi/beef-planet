@@ -71,11 +71,14 @@ void bp::PhysicalObject::render() {
 
     m_shaders->SetSpecularRoughness(1.0f);
     m_shaders->SetColorReplace(true);
+
+    ysMatrix transform = ysMath::MatMult(
+        m_physics_component.m_transform.GetWorldTransform(),
+        ysMath::ScaleTransform(ysMath::LoadScalar(m_size)));
     m_universe->drawScaleModel(
             m_model,
-            m_size,
             nullptr,
-            m_physics_component.m_transform.GetWorldTransform());
+            transform);
 }
 
 void bp::PhysicalObject::updateMass(float mass) {

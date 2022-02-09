@@ -4,6 +4,8 @@ build/
 # Ignore user's workspace
 workspace/
 
+.blend1
+
 # clangd cache and code completion files
 .cache
 compile_commands.json

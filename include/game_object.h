@@ -32,7 +32,9 @@ namespace bp {
 
             virtual void free();
 
-            static ysMatrix lineHelper(ysVector start, ysVector end);
+            static ysMatrix sphereHelper(const ysMatrix &transform, float radius);
+            static ysMatrix sphereHelper(const ysVector &position, float radius);
+            static ysMatrix lineHelper(ysVector start, ysVector end, float radius);
 
             void clearTags() { m_tags = 0; }
             void addTag(uint64_t tag) { m_tags |= tag; }

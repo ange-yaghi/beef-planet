@@ -63,8 +63,8 @@ void bp::BeefApplication::initialize(void *instance, ysContextObject::DeviceAPI 
 
     m_assetManager.SetEngine(&m_engine);
 
-    m_assetManager.CompileInterchangeFile((assetPath + "/icosphere").c_str(), 1.0f, true);
-    m_assetManager.LoadSceneFile((assetPath + "/icosphere").c_str(), true);
+    m_assetManager.CompileInterchangeFile((assetPath + "/assets").c_str(), 1.0f, true);
+    m_assetManager.LoadSceneFile((assetPath + "/assets").c_str(), true);
 
     m_shaders.SetCameraMode(dbasic::DefaultShaders::CameraMode::Target);
     m_shaders.SetCameraPosition(ysMath::Constants::Zero);
@@ -76,11 +76,11 @@ void bp::BeefApplication::initialize(void *instance, ysContextObject::DeviceAPI 
     m_universe.initialize(&m_engine, &m_shaders);
 
     PlanetSpawner* planet_spawner = m_universe.spawn<PlanetSpawner>();
-    planet_spawner->setModel(m_assetManager.GetModelAsset("Icosphere"));
+    planet_spawner->setModel(m_assetManager.GetModelAsset("Planet"));
 
     m_player = m_universe.spawn<PlayerObject>();
     m_player->getPhysicsComponent()->m_transform.SetPosition(ysMath::LoadVector(0.0f, 0.0f, 0.0f));
-    m_player->setModel(m_assetManager.GetModelAsset("Icosphere"));
+    m_player->setModel(m_assetManager.GetModelAsset("Planet"));
 
     m_shaders.SetNearClip(1.0f);
     m_shaders.SetFarClip(500.0f);

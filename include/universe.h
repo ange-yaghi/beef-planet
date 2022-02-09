@@ -38,7 +38,6 @@ namespace bp {
 
             void drawScaleModel(
                     dbasic::ModelAsset *model,
-                    double size,
                     ysTexture *texture,
                     const ysMatrix &transform);
             void addScaleLight(dbasic::Light &light);

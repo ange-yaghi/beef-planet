@@ -87,12 +87,12 @@ void bp::PlayerObject::render() {
     m_shaders->ResetBrdfParameters();
     m_shaders->SetBaseColor(m_color);
     m_shaders->SetSpecularRoughness(1.0f);
-    m_shaders->SetColorReplace(true);
+    m_shaders->SetColorReplace(true);;
+    
     m_universe->drawScaleModel(
             m_model,
-            m_size,
             nullptr,
-            m_physics_component.m_transform.GetWorldTransform());
+            sphereHelper(m_physics_component.m_transform.GetWorldTransform(), m_size));
 
     ysVector leftHand;
     ysVector rightHand;
@@ -128,26 +128,27 @@ void bp::PlayerObject::render() {
             ysMath::LoadVector(m_size, 0.0, 0.0)),
             m_physics_component.m_transform.GetWorldPosition());
 
-    m_universe->drawScaleModel(m_model, 0.5, nullptr,
-            GameObject::lineHelper(leftShoulder, leftElbow));
-    m_universe->drawScaleModel(m_model, 0.5, nullptr,
-            GameObject::lineHelper(rightShoulder, rightElbow));
-    m_universe->drawScaleModel(m_model, 0.5, nullptr,
-            GameObject::lineHelper(leftElbow, leftHand));
-    m_universe->drawScaleModel(m_model, 0.5, nullptr,
-            GameObject::lineHelper(rightElbow, rightHand));
-    m_universe->drawScaleModel(m_model, 0.5, nullptr,
-            ysMath::TranslationTransform(leftShoulder));
-    m_universe->drawScaleModel(m_model, 0.5, nullptr,
-            ysMath::TranslationTransform(rightShoulder));
-    m_universe->drawScaleModel(m_model, 0.5, nullptr,
-            ysMath::TranslationTransform(leftElbow));
-    m_universe->drawScaleModel(m_model, 0.5, nullptr,
-            ysMath::TranslationTransform(rightElbow));
-    m_universe->drawScaleModel(m_model, 1.0, nullptr,
-            ysMath::TranslationTransform(leftHand));
-    m_universe->drawScaleModel(m_model, 1.0, nullptr,
-            ysMath::TranslationTransform(rightHand));
+    m_universe->drawScaleModel(m_model, nullptr,
+            GameObject::lineHelper(leftShoulder, leftElbow, 0.25 * m_size));
+    m_universe->drawScaleModel(m_model, nullptr,
+            GameObject::lineHelper(rightShoulder, rightElbow, 0.25 * m_size));
+    m_universe->drawScaleModel(m_model, nullptr,
+            GameObject::lineHelper(leftElbow, leftHand, 0.25 * m_size));
+    m_universe->drawScaleModel(m_model, nullptr,
+            GameObject::lineHelper(rightElbow, rightHand, 0.25 * m_size));
+
+    m_universe->drawScaleModel(m_model, nullptr,
+            sphereHelper(leftShoulder, 0.25 * m_size));
+    m_universe->drawScaleModel(m_model, nullptr,
+            sphereHelper(rightShoulder, 0.25 * m_size));
+    m_universe->drawScaleModel(m_model, nullptr,
+            sphereHelper(leftElbow, 0.25 * m_size));
+    m_universe->drawScaleModel(m_model, nullptr,
+            sphereHelper(rightElbow, 0.25 * m_size));
+    m_universe->drawScaleModel(m_model, nullptr,
+            sphereHelper(leftHand, 0.25 * m_size));
+    m_universe->drawScaleModel(m_model, nullptr,
+            sphereHelper(rightHand, 0.25 * m_size));
 
     dbasic::Light glow;
     glow.Active = 1;
