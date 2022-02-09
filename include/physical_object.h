@@ -4,6 +4,7 @@
 #include "game_object.h"
 
 #include "physics_component.h"
+#include "spring.h"
 
 #include "delta.h"
 
@@ -34,9 +35,9 @@ namespace bp {
 
         protected:
             PhysicsComponent m_physicsComponent;
+            Spring m_sizeAnimator;
 
             float m_size;
-            float m_sizeGoal;
             dbasic::ModelAsset* m_model;
             ysVector m_color;
     };

@@ -7,10 +7,13 @@
 bp::PhysicalObject::PhysicalObject() {
     m_model = nullptr;
     m_size = 1.0;
-    m_sizeGoal = 1.0;
     m_physicsComponent.setParent(this);
     m_color = ysMath::Constants::Zero;
     addTag(GameObject::TagPlanet);
+
+    m_sizeAnimator.m_kd = ysMath::LoadScalar(20.0f);
+    m_sizeAnimator.m_ks = ysMath::LoadScalar(1000.0f);
+    m_sizeAnimator.m_steps = 1;
 }
 
 bp::PhysicalObject::~PhysicalObject() {
@@ -33,7 +36,9 @@ void bp::PhysicalObject::initialize(
 }
 
 void bp::PhysicalObject::process(float dt) {
-    m_size = m_sizeGoal * 0.01 + m_size * 0.99;
+    m_sizeAnimator.process(dt);
+    m_size = ysMath::GetScalar(m_sizeAnimator.m_x);
+
     const int collisionCount = m_physicsComponent.getIntersectionCount();
     for (int i = 0; i < collisionCount; ++i) {
         PhysicalObject* object = m_physicsComponent.getIntersection(i);
@@ -57,10 +62,10 @@ void bp::PhysicalObject::process(float dt) {
                 float newMass = m_physicsComponent.getMass() + component->getMass();
                 m_physicsComponent.setVelocity(ysMath::Div(ysMath::Add(
                         ysMath::Mul(
-                                ysMath::LoadScalar(m_physicsComponent.getMass()), 
+                                ysMath::LoadScalar(m_physicsComponent.getMass()),
                                 m_physicsComponent.getVelocity()),
                         ysMath::Mul(
-                                ysMath::LoadScalar(component->getMass() * 0.5), 
+                                ysMath::LoadScalar(component->getMass() * 0.5),
                                 component->getVelocity())),
                     ysMath::LoadScalar(newMass)));
                 updateMass(newMass);
@@ -93,7 +98,8 @@ void bp::PhysicalObject::render() {
 
 void bp::PhysicalObject::updateMass(float mass) {
     getPhysicsComponent()->setMass(mass);
-    m_sizeGoal = std::pow(m_physicsComponent.getMass(), 1.0 / 3.0);
+    m_sizeAnimator.m_target =
+        ysMath::LoadScalar(std::pow(m_physicsComponent.getMass(), 1.0 / 3.0));
 }
 
 bool bp::PhysicalObject::rayTest(const ysVector &d, const ysVector &p0, float *s) {

@@ -23,6 +23,7 @@ void bp::PlayerObject::initialize(
     PhysicalObject::initialize(engine, shaders, universe);
     m_mouseController.initialize(engine, shaders, universe);
     updateMass(100.0);
+    m_sizeAnimator.m_x = ysMath::LoadScalar(5);
     m_color = ysColor::srgbiToLinear(0xAA, 0xAA, 0xFF);
 }
 

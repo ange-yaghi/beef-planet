@@ -27,6 +27,7 @@ add_executable(beef-planet WIN32
     src/player_object.cpp
     src/universe.cpp
     src/space_dust.cpp
+    src/spring.cpp
 
     # Include files
     include/delta.h
@@ -40,6 +41,7 @@ add_executable(beef-planet WIN32
     include/player_object.h
     include/universe.h
     include/space_dust.h
+    include/spring.h
 )
 
 target_link_libraries(beef-planet
