@@ -32,7 +32,7 @@ void bp::SpaceDust::render() {
     m_universe->drawScaleModel(
             m_model,
             nullptr,
-            m_physics_component.m_transform.GetWorldTransform());
+            m_physicsComponent.m_transform.GetWorldTransform());
 }
 
 void bp::SpaceDust::updateMass(float mass) {

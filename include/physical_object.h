@@ -24,7 +24,7 @@ namespace bp {
 
             void setModel(dbasic::ModelAsset* asset) { m_model = asset; }
 
-            PhysicsComponent *getPhysicsComponent() { return &m_physics_component; }
+            PhysicsComponent *getPhysicsComponent() { return &m_physicsComponent; }
 
             virtual void updateMass(float mass);
             float getSize() { return m_size; }
@@ -33,9 +33,10 @@ namespace bp {
             virtual void free();
 
         protected:
-            PhysicsComponent m_physics_component;
+            PhysicsComponent m_physicsComponent;
 
             float m_size;
+            float m_sizeGoal;
             dbasic::ModelAsset* m_model;
             ysVector m_color;
     };

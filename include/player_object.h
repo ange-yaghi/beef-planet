@@ -22,8 +22,6 @@ namespace bp {
         virtual void process(float dt);
         virtual void render();
 
-        virtual void updateMass(float mass);
-
     private:
         MouseController m_mouseController;
         PhysicalObject *m_leftGrab;

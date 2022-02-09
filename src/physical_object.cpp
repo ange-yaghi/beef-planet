@@ -7,7 +7,8 @@
 bp::PhysicalObject::PhysicalObject() {
     m_model = nullptr;
     m_size = 1.0;
-    m_physics_component.setParent(this);
+    m_sizeGoal = 1.0;
+    m_physicsComponent.setParent(this);
     m_color = ysMath::Constants::Zero;
     addTag(GameObject::TagPlanet);
 }
@@ -23,7 +24,7 @@ void bp::PhysicalObject::initialize(
 {
     GameObject::initialize(engine, shaders, universe);
 
-    universe->getGravitySimulator()->registerComponent(&m_physics_component);
+    universe->getGravitySimulator()->registerComponent(&m_physicsComponent);
 
     m_color = ysColor::srgbiToLinear(
             ysMath::UniformRandomInt(200) + 55,
@@ -32,28 +33,37 @@ void bp::PhysicalObject::initialize(
 }
 
 void bp::PhysicalObject::process(float dt) {
-    const int collisionCount = m_physics_component.getIntersectionCount();
+    m_size = m_sizeGoal * 0.01 + m_size * 0.99;
+    const int collisionCount = m_physicsComponent.getIntersectionCount();
     for (int i = 0; i < collisionCount; ++i) {
-        PhysicalObject* object = m_physics_component.getIntersection(i);
+        PhysicalObject* object = m_physicsComponent.getIntersection(i);
         PhysicsComponent* component = object->getPhysicsComponent();
 
-        if (m_physics_component.getMass() > component->getMass()) {
+        if (m_physicsComponent.getMass() > component->getMass()) {
             ysVector normal = ysMath::Sub(
-                    m_physics_component.m_transform.GetWorldPosition(),
+                    m_physicsComponent.m_transform.GetWorldPosition(),
                     component->m_transform.GetWorldPosition());
             normal = ysMath::Normalize(normal);
 
             ysVector velocityDirection = ysMath::Normalize(
                     ysMath::Sub(
-                        component->getVelocity(),
-                        m_physics_component.getVelocity()));
+                            component->getVelocity(),
+                            m_physicsComponent.getVelocity()));
             const float normalDotVel =
                 ysMath::GetScalar(ysMath::Dot(normal, velocityDirection));
 
             if (normalDotVel > 0.7) {
                 object->scheduleDeletion();
-                const float currentMass = m_physics_component.getMass();
-                updateMass(currentMass + component->getMass());
+                float newMass = m_physicsComponent.getMass() + component->getMass();
+                m_physicsComponent.setVelocity(ysMath::Div(ysMath::Add(
+                        ysMath::Mul(
+                                ysMath::LoadScalar(m_physicsComponent.getMass()), 
+                                m_physicsComponent.getVelocity()),
+                        ysMath::Mul(
+                                ysMath::LoadScalar(component->getMass() * 0.5), 
+                                component->getVelocity())),
+                    ysMath::LoadScalar(newMass)));
+                updateMass(newMass);
             }
         }
     }
@@ -73,7 +83,7 @@ void bp::PhysicalObject::render() {
     m_shaders->SetColorReplace(true);
 
     ysMatrix transform = ysMath::MatMult(
-        m_physics_component.m_transform.GetWorldTransform(),
+        m_physicsComponent.m_transform.GetWorldTransform(),
         ysMath::ScaleTransform(ysMath::LoadScalar(m_size)));
     m_universe->drawScaleModel(
             m_model,
@@ -83,7 +93,7 @@ void bp::PhysicalObject::render() {
 
 void bp::PhysicalObject::updateMass(float mass) {
     getPhysicsComponent()->setMass(mass);
-    m_size = std::pow(m_physics_component.getMass(), 1.0 / 3.0);
+    m_sizeGoal = std::pow(m_physicsComponent.getMass(), 1.0 / 3.0);
 }
 
 bool bp::PhysicalObject::rayTest(const ysVector &d, const ysVector &p0, float *s) {
@@ -127,5 +137,5 @@ bool bp::PhysicalObject::rayTest(const ysVector &d, const ysVector &p0, float *s
 }
 
 void bp::PhysicalObject::free() {
-    m_universe->getGravitySimulator()->deregisterComponent(&m_physics_component);
+    m_universe->getGravitySimulator()->deregisterComponent(&m_physicsComponent);
 }
