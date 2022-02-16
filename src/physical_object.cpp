@@ -13,7 +13,7 @@ bp::PhysicalObject::PhysicalObject() {
 
     m_sizeAnimator.m_kd = ysMath::LoadScalar(20.0f);
     m_sizeAnimator.m_ks = ysMath::LoadScalar(1000.0f);
-    m_sizeAnimator.m_steps = 1;
+    m_sizeAnimator.m_steps = 10;
 }
 
 bp::PhysicalObject::~PhysicalObject() {

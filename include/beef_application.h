@@ -45,6 +45,7 @@ namespace bp {
         int m_screenResolution[ScreenResolutionHistoryLength][2];
         int m_screenResolutionIndex;
         bool m_recording;
+        float m_timescale;
 
         dbasic::TextRenderer m_textRenderer;
 

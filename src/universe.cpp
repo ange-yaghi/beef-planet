@@ -94,7 +94,7 @@ void bp::Universe::worldDestroyer() {
         if (!m_game_objects[i]->isDeleted()) {
             ++j;
         }
-        else {
+        else if (!m_game_objects[i]->hasTag(GameObject::TagPlayer)) {
             m_game_objects[i]->free();
             delete m_game_objects[i];
         }

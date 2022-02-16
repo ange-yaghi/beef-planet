@@ -7,8 +7,8 @@ namespace bp {
     class Universe;
     class GameObject {
         public:
-            const uint64_t TagPlayer = 0x1;
-            const uint64_t TagPlanet = 0x2;
+            static const uint64_t TagPlayer = 0x1;
+            static const uint64_t TagPlanet = 0x2;
 
         public:
             GameObject();

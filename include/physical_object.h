@@ -26,6 +26,7 @@ namespace bp {
             void setModel(dbasic::ModelAsset* asset) { m_model = asset; }
 
             PhysicsComponent *getPhysicsComponent() { return &m_physicsComponent; }
+            Spring *getSizeAnimator() { return &m_sizeAnimator; }
 
             virtual void updateMass(float mass);
             float getSize() { return m_size; }

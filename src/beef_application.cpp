@@ -95,12 +95,16 @@ void bp::BeefApplication::initialize(void *instance, ysContextObject::DeviceAPI 
     m_textRenderer.SetEngine(&m_engine);
     m_textRenderer.SetRenderer(m_engine.GetUiRenderer());
     m_textRenderer.SetFont(m_engine.GetConsole()->GetFont());
+
+    m_timescale = 1.0;
 }
 
 void bp::BeefApplication::process() {
     float frameLength = m_engine.GetFrameLength();
     if (frameLength > 1.0 / 30.0) frameLength = 1.0 / 30.0;
-    //frameLength = frameLength * m_player->getSize() * 0.1;
+    m_timescale = ysMath::GetScalar(m_player->getSizeAnimator()->m_target) * 0.2;
+    if (m_timescale < 0.1) m_timescale = 0.1;
+    frameLength = frameLength * m_timescale;
     m_universe.process(frameLength);
 }
 
@@ -137,7 +141,7 @@ void bp::BeefApplication::render() {
     std::stringstream ss;
     ss << "FPS: " << m_engine.GetAverageFramerate() << "\n";
     ss << "Size: " << m_player->getSize() << "\n";
-    ss << "iMass: " << m_player->getPhysicsComponent()->getInverseMass() << "\n";
+    ss << "Timescale: " << m_timescale << "\n";
     ss << "Mass: " << m_player->getPhysicsComponent()->getMass() << "\n";
     ss << "Objects: " << m_universe.getGameObjectCount();
     m_textRenderer.RenderText(
