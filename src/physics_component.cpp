@@ -29,7 +29,7 @@ void bp::PhysicsComponent::integrate(float dt) {
 }
 
 void bp::PhysicsComponent::setMass(float mass) {
-    if (mass == 0) {
+    if (mass <= 0) {
         m_inverseMass = 1.0;
         m_massless = true;
     }

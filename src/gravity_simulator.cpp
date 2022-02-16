@@ -32,10 +32,10 @@ void bp::GravitySimulator::generateForces() {
 
     const float inverseG = 1.0 / m_G;
     for (int i = 0; i < m_components.size(); i++) {
-        if (m_components[i]->isMassless()) continue;
+        //if (m_components[i]->isMassless()) continue;
 
         for (int j = i + 1; j < m_components.size(); j++) {
-            if (m_components[j]->isMassless()) continue;
+            //if (m_components[j]->isMassless()) continue;
 
             const float inverseMass0 = m_components[i]->getInverseMass();
             const float inverseMass1 = m_components[j]->getInverseMass();
@@ -49,12 +49,6 @@ void bp::GravitySimulator::generateForces() {
                     m_components[i]->m_transform.GetWorldPosition(),
                     m_components[j]->m_transform.GetWorldPosition());
             ysVector magnitude = ysMath::Magnitude(delta);
-            // = |r| ^ 3 / (m1 * m2 * G)
-            ysVector tempMath = ysMath::Mul(
-                    magnitude,
-                    ysMath::Mul(magnitude, ysMath::Mul(magnitude, inverseMassMult)));
-            // = r * G * m1 * m2 / |r| ^ 3
-            ysVector force = ysMath::Div(delta, tempMath);
 
             const float distance =
                 ysMath::GetScalar(magnitude) - (size0 + size1);
@@ -71,6 +65,13 @@ void bp::GravitySimulator::generateForces() {
                 if (m_components[i]->isGravityEnabled()
                         && m_components[j]->isGravityEnabled())
                 {
+                    // = |r| ^ 3 / (m1 * m2 * G)
+                    ysVector tempMath = ysMath::Mul(
+                        magnitude,
+                        ysMath::Mul(magnitude, ysMath::Mul(magnitude, inverseMassMult)));
+                    // = r * G * m1 * m2 / |r| ^ 3
+                    ysVector force = ysMath::Div(delta, tempMath);
+
                     m_components[i]->forceAdd(force);
                     m_components[j]->forceAdd(ysMath::Negate(force));
                 }

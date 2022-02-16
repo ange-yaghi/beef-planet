@@ -53,7 +53,11 @@ void bp::PlayerObject::process(float dt) {
         getPhysicsComponent()->forceAdd(movement);
     }
     else if (m_engine->IsKeyDown(ysKey::Code::M)) {
-        updateMass(1000);
+        updateMass(getPhysicsComponent()->getMass() * 1.05);
+    }
+    else if (m_engine->IsKeyDown(ysKey::Code::N)) {
+        updateMass(getPhysicsComponent()->getMass() * .95);
+
     }
 
     m_mouseController.process(
@@ -211,13 +215,13 @@ void bp::PlayerObject::render() {
     m_universe->drawScaleModel(m_model, nullptr,
             sphereHelper(rightShoulder, 0.25 * m_size));
     m_universe->drawScaleModel(m_model, nullptr,
-            sphereHelper(leftElbow, 0.25 * m_size));
+            sphereHelper(leftElbow, 0.2 * m_size));
     m_universe->drawScaleModel(m_model, nullptr,
-            sphereHelper(rightElbow, 0.25 * m_size));
+            sphereHelper(rightElbow, 0.2 * m_size));
     m_universe->drawScaleModel(m_model, nullptr,
-            sphereHelper(leftHand, 0.25 * m_size));
+            sphereHelper(leftHand, 0.4 * m_size));
     m_universe->drawScaleModel(m_model, nullptr,
-            sphereHelper(rightHand, 0.25 * m_size));
+            sphereHelper(rightHand, 0.4 * m_size));
 
     dbasic::Light glow;
     glow.Active = 1;

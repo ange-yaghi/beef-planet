@@ -4,6 +4,9 @@
 #include "../include/player_object.h"
 #include "../include/planet_spawner.h"
 
+#include <sstream>
+#include <string>
+
 bp::BeefApplication::BeefApplication() {
     m_player = nullptr;
 
@@ -88,10 +91,17 @@ void bp::BeefApplication::initialize(void *instance, ysContextObject::DeviceAPI 
     m_shaders.SetFogNear(150.0f);
     m_shaders.SetFogFar(400.0f);
     m_shaders.SetFogColor(clearColor);
+
+    m_textRenderer.SetEngine(&m_engine);
+    m_textRenderer.SetRenderer(m_engine.GetUiRenderer());
+    m_textRenderer.SetFont(m_engine.GetConsole()->GetFont());
 }
 
 void bp::BeefApplication::process() {
-    m_universe.process(m_engine.GetFrameLength());
+    float frameLength = m_engine.GetFrameLength();
+    if (frameLength > 1.0 / 30.0) frameLength = 1.0 / 30.0;
+    //frameLength = frameLength * m_player->getSize() * 0.1;
+    m_universe.process(frameLength);
 }
 
 void bp::BeefApplication::render() {
@@ -101,49 +111,43 @@ void bp::BeefApplication::render() {
     m_shaders.SetScreenDimensions((float)screenWidth, (float)screenHeight);
     m_shaders.CalculateCamera();
 
-    //m_shaders.SetCameraPosition(ysMath::LoadVector(4.0f, 4.0f, 2.0f));
-    //m_shaders.SetCameraUp(ysMath::Constants::ZAxis);
-
     m_shaders.ResetLights();
     m_shaders.SetAmbientLight(ysMath::GetVector4(ysColor::srgbiToLinear(0x22, 0x00, 0x33)));
 
-    dbasic::Light sun;
-    sun.Active = 1;
-    sun.Attenuation0 = 0.0f;
-    sun.Attenuation1 = 0.0f;
-    sun.Color = ysMath::GetVector4(ysMath::Mul(ysColor::srgbiToLinear(0x33, 0x33, 0x77), ysMath::LoadScalar(1.0f)));
-    sun.Direction = ysVector4(0.0f, 0.0f, 0.0f, 0.0f);
-    sun.FalloffEnabled = 0;
-    sun.Position = ysMath::GetVector4(ysMath::LoadVector(0.0, 1000.0, 0.0));
-    m_shaders.AddLight(sun);
+    dbasic::Light sunBlue;
+    sunBlue.Active = 1;
+    sunBlue.Attenuation0 = 0.0f;
+    sunBlue.Attenuation1 = 0.0f;
+    sunBlue.Color = ysMath::GetVector4(ysMath::Mul(ysColor::srgbiToLinear(0x33, 0x33, 0x77), ysMath::LoadScalar(1.0f)));
+    sunBlue.Direction = ysVector4(0.0f, 0.0f, 0.0f, 0.0f);
+    sunBlue.FalloffEnabled = 0;
+    sunBlue.Position = ysMath::GetVector4(ysMath::LoadVector(0.0, 1000.0, 0.0));
+    m_shaders.AddLight(sunBlue);
 
-    dbasic::Light sun2;
-    sun2.Active = 1;
-    sun2.Attenuation0 = 0.0f;
-    sun2.Attenuation1 = 0.0f;
-    sun2.Color = ysMath::GetVector4(ysMath::Mul(ysColor::srgbiToLinear(0x77, 0x33, 0x33), ysMath::LoadScalar(1.0f)));
-    sun2.Direction = ysVector4(0.0f, 0.0f, 0.0f, 0.0f);
-    sun2.FalloffEnabled = 0;
-    sun2.Position = ysMath::GetVector4(ysMath::LoadVector(0.0, -1000.0, 0.0));
-    m_shaders.AddLight(sun2);
+    dbasic::Light sunRed;
+    sunRed.Active = 1;
+    sunRed.Attenuation0 = 0.0f;
+    sunRed.Attenuation1 = 0.0f;
+    sunRed.Color = ysMath::GetVector4(ysMath::Mul(ysColor::srgbiToLinear(0x77, 0x33, 0x33), ysMath::LoadScalar(1.0f)));
+    sunRed.Direction = ysVector4(0.0f, 0.0f, 0.0f, 0.0f);
+    sunRed.FalloffEnabled = 0;
+    sunRed.Position = ysMath::GetVector4(ysMath::LoadVector(0.0, -1000.0, 0.0));
+    m_shaders.AddLight(sunRed);
+
+    std::stringstream ss;
+    ss << "FPS: " << m_engine.GetAverageFramerate() << "\n";
+    ss << "Size: " << m_player->getSize() << "\n";
+    ss << "iMass: " << m_player->getPhysicsComponent()->getInverseMass() << "\n";
+    ss << "Mass: " << m_player->getPhysicsComponent()->getMass() << "\n";
+    ss << "Objects: " << m_universe.getGameObjectCount();
+    m_textRenderer.RenderText(
+        ss.str(),
+        50 - m_engine.GetScreenWidth() / 2.0,
+        m_engine.GetScreenHeight() / 2.0 - 50,
+        32
+    );
 
     m_universe.render();
-
-    //m_engine.SetDrawTarget(dbasic::DeltaEngine::DrawTarget::Gui);
-    //m_engine.SetObjectTransform(ysMath::TranslationTransform(ysMath::LoadVector(0.0f, 0.0f, 0.0f)));
-    //m_engine.SetBaseColor(ysColor::srgbiToLinear(0xFF, 0xFF, 0xFF));
-    //m_engine.SetLit(false);
-    //m_engine.DrawBox(10.0, 10.0, 0);
-    //m_engine.SetDrawTarget(dbasic::DeltaEngine::DrawTarget::Main);
-
-    //DrawDebugScreen();
-
-    //m_engine.ResetBrdfParameters();
-    //m_engine.SetBaseColor(ysColor::srgbiToLinear(0xFF, 0xFF, 0xFF));
-    //m_engine.SetObjectTransform(ysMath::TranslationTransform(ysMath::LoadVector(0.0f, 0.0f, 0.0f)));
-    //m_engine.SetSpecularRoughness(1.0f);
-    //m_engine.SetEmission(ysMath::Mul(ysColor::srgbiToLinear(0xAA, 0xAA, 0xFF), ysMath::LoadScalar(0.2f)));
-    //m_engine.DrawModel(m_assetManager.GetModelAsset("Icosphere"), 1.0, nullptr);
 }
 
 void bp::BeefApplication::startRecording() {
