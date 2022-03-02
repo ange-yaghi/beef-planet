@@ -4,6 +4,7 @@ bp::Universe::Universe() {
     m_engine = nullptr;
     m_shaders = nullptr;
     m_player = nullptr;
+    m_timeScale = 1.0;
 }
 
 bp::Universe::~Universe() {

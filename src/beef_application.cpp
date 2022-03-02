@@ -109,6 +109,7 @@ void bp::BeefApplication::process() {
     m_timescale = ysMath::GetScalar(m_player->getSizeAnimator()->m_target) * 0.2;
     if (m_timescale < 0.1) m_timescale = 0.1;
     frameLength = frameLength * m_timescale;
+    m_universe.setTimeScale(m_timescale);
     m_universe.process(frameLength);
 }
 

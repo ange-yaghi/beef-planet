@@ -38,7 +38,7 @@ void bp::PlayerObject::process(float dt) {
         movement = ysMath::Normalize(movement);
         movement = ysMath::Mul(
                 movement,
-                ysMath::LoadScalar(20.0 * PhysicalObject::m_physicsComponent.getMass()));
+                ysMath::LoadScalar(20.0 * PhysicalObject::m_physicsComponent.getMass() / m_universe->getTimeScale()));
         getPhysicsComponent()->forceAdd(movement);
     }
     else if (m_engine->IsKeyDown(ysKey::Code::S)) {
@@ -49,7 +49,7 @@ void bp::PlayerObject::process(float dt) {
         movement = ysMath::Normalize(movement);
         movement = ysMath::Mul(
                 movement,
-                ysMath::LoadScalar(20.0 * PhysicalObject::m_physicsComponent.getMass()));
+                ysMath::LoadScalar(20.0 * PhysicalObject::m_physicsComponent.getMass() / m_universe->getTimeScale()));
         getPhysicsComponent()->forceAdd(movement);
     }
     else if (m_engine->IsKeyDown(ysKey::Code::M)) {

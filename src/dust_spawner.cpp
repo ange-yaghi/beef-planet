@@ -78,9 +78,9 @@ void bp::DustSpawner::createDust() {
             ysMath::Add(playerLocation, offset));
     newDust->getPhysicsComponent()->setVelocity(
             ysMath::LoadVector(
-                0.05f * (ysMath::UniformRandom(1.0f) - 0.5f),
-                0.05f * (ysMath::UniformRandom(1.0f) - 0.5f),
-                0.05f * (ysMath::UniformRandom(1.0f) - 0.5f)));
+                0.5f * (ysMath::UniformRandom(1.0f) - 0.5f),
+                0.5f * (ysMath::UniformRandom(1.0f) - 0.5f),
+                0.5f * (ysMath::UniformRandom(1.0f) - 0.5f)));
     newDust->setModel(m_model);
     newDust->updateMass(0.01);
     newDust->getPhysicsComponent()->setEnableGravity(false);

@@ -37,6 +37,9 @@ namespace bp {
             void setScale(double scale) { m_scale = scale; }
             double getScale() { return m_scale; }
 
+            void setTimeScale(float scale) { m_timeScale = scale; }
+            double getTimeScale() { return m_timeScale; }
+
             void drawScaleModel(
                     dbasic::ModelAsset *model,
                     ysTexture *texture,
@@ -61,6 +64,7 @@ namespace bp {
             std::vector<GameObject *> m_spawn_queue;
             std::vector<GameObject *> m_game_objects;
             double m_scale;
+            float m_timeScale;
     };
 
 } /* namespace bp */

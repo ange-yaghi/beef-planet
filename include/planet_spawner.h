@@ -25,9 +25,11 @@ namespace bp {
 
         private:
             void createPlanet();
+            void createPlanetPointSource();
 
             float m_cooldown;
             dbasic::ModelAsset *m_model;
+            float m_spawnRadius;
     };
 } /* namespace bp */
 
