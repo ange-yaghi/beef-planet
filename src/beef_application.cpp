@@ -87,6 +87,7 @@ void bp::BeefApplication::initialize(void *instance, ysContextObject::DeviceAPI 
     m_player = m_universe.spawn<PlayerObject>();
     m_player->getPhysicsComponent()->m_transform.SetPosition(ysMath::LoadVector(0.0f, 0.0f, 0.0f));
     m_player->setModel(m_assetManager.GetModelAsset("Planet"));
+    m_universe.m_player = m_player;
 
     m_shaders.SetNearClip(1.0f);
     m_shaders.SetFarClip(500.0f);

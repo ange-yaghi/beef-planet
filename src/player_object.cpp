@@ -70,7 +70,7 @@ void bp::PlayerObject::process(float dt) {
             m_shaders->GetCameraPosition(),
             TagPlanet);
         if (target != nullptr) {
-            target->setDebugHighlighted(true);
+            //target->setDebugHighlighted(true);
             m_leftGrab = static_cast<PhysicalObject *>(target);
         }
     }
@@ -85,7 +85,7 @@ void bp::PlayerObject::process(float dt) {
             m_shaders->GetCameraPosition(),
             TagPlanet);
         if (target != nullptr) {
-            target->setDebugHighlighted(true);
+            //target->setDebugHighlighted(true);
             m_rightGrab = static_cast<PhysicalObject *>(target);
         }
     }
@@ -137,10 +137,10 @@ void bp::PlayerObject::render() {
 
     ysVector leftHand, rightHand, leftElbow, rightElbow;
 
-    ysVector leftShoulder = ysMath::Add(ysMath::MatMult(m_mouseController.getOrientation(),
+    const ysVector leftShoulder = ysMath::Add(ysMath::MatMult(m_mouseController.getOrientation(),
         ysMath::LoadVector(-m_size, 0.0, 0.0)),
         m_physicsComponent.m_transform.GetWorldPosition());
-    ysVector rightShoulder = ysMath::Add(ysMath::MatMult(m_mouseController.getOrientation(),
+    const ysVector rightShoulder = ysMath::Add(ysMath::MatMult(m_mouseController.getOrientation(),
         ysMath::LoadVector(m_size, 0.0, 0.0)),
         m_physicsComponent.m_transform.GetWorldPosition());
 
@@ -156,7 +156,12 @@ void bp::PlayerObject::render() {
 
     }
     else {
-        leftHand = m_leftGrab->getPhysicsComponent()->m_transform.GetWorldPosition();
+        const ysVector planetPosition = m_leftGrab->getPhysicsComponent()->m_transform.GetWorldPosition();
+        const ysVector delta = ysMath::Normalize(ysMath::Sub(leftShoulder, planetPosition));
+        const ysVector radius = ysMath::LoadScalar(m_leftGrab->getSize());
+
+        leftHand = ysMath::Add(planetPosition, ysMath::Mul(delta, radius));
+
         ysVector leftDelta = ysMath::Sub(leftHand, leftShoulder);
         ysVector leftProjection = ysMath::MatMult(
             ysMath::Transpose(m_mouseController.getOrientation()), leftDelta);
@@ -183,7 +188,12 @@ void bp::PlayerObject::render() {
             m_physicsComponent.m_transform.GetWorldPosition());
     }
     else {
-        rightHand = m_rightGrab->getPhysicsComponent()->m_transform.GetWorldPosition();
+        const ysVector planetPosition = m_rightGrab->getPhysicsComponent()->m_transform.GetWorldPosition();
+        const ysVector delta = ysMath::Normalize(ysMath::Sub(rightShoulder, planetPosition));
+        const ysVector radius = ysMath::LoadScalar(m_rightGrab->getSize());
+
+        rightHand = ysMath::Add(planetPosition, ysMath::Mul(delta, radius));
+
         ysVector rightDelta = ysMath::Sub(rightHand, rightShoulder);
         ysVector rightProjection = ysMath::MatMult(
                 ysMath::Transpose(m_mouseController.getOrientation()), rightDelta);

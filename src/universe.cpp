@@ -3,6 +3,7 @@
 bp::Universe::Universe() {
     m_engine = nullptr;
     m_shaders = nullptr;
+    m_player = nullptr;
 }
 
 bp::Universe::~Universe() {

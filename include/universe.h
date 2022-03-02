@@ -3,6 +3,7 @@
 
 #include "game_object.h"
 #include "gravity_simulator.h"
+#include "player_object.h"
 
 #include "delta.h"
 
@@ -45,6 +46,9 @@ namespace bp {
             int getGameObjectCount() const { return m_game_objects.size(); }
 
             GameObject *rayCast(const ysVector &d, const ysVector &p0, uint64_t tags);
+
+        public:
+            PlayerObject *m_player;
 
         private:
             void processSpawnQueue();

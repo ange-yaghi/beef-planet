@@ -5,7 +5,7 @@ bp::Spring::Spring() {
     m_x = m_target = ysMath::Constants::Zero;
     m_v = ysMath::Constants::Zero;
 
-    m_steps = 10;
+    m_steps = 1000;
 }
 
 bp::Spring::~Spring() {
