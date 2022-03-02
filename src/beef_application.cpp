@@ -3,6 +3,7 @@
 #include "../include/physical_object.h"
 #include "../include/player_object.h"
 #include "../include/planet_spawner.h"
+#include "../include/dust_spawner.h"
 
 #include <sstream>
 #include <string>
@@ -80,6 +81,8 @@ void bp::BeefApplication::initialize(void *instance, ysContextObject::DeviceAPI 
 
     PlanetSpawner* planet_spawner = m_universe.spawn<PlanetSpawner>();
     planet_spawner->setModel(m_assetManager.GetModelAsset("Planet"));
+    DustSpawner *dust_spawner = m_universe.spawn<DustSpawner>();
+    dust_spawner->setModel(m_assetManager.GetModelAsset("space_dust_1"));
 
     m_player = m_universe.spawn<PlayerObject>();
     m_player->getPhysicsComponent()->m_transform.SetPosition(ysMath::LoadVector(0.0f, 0.0f, 0.0f));

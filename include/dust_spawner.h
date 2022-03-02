@@ -1,5 +1,5 @@
-#ifndef BEEF_PLANET_PLANET_SPAWNER_H
-#define BEEF_PLANET_PLANET_SPAWNER_H
+#ifndef BEEF_PLANET_DUST_SPAWNER_H
+#define BEEF_PLANET_DUST_SPAWNER_H
 
 #include "game_object.h"
 
@@ -8,10 +8,10 @@
 #include "delta.h"
 
 namespace bp {
-    class PlanetSpawner : public GameObject {
+    class DustSpawner : public GameObject {
         public:
-            PlanetSpawner();
-            virtual ~PlanetSpawner();
+            DustSpawner();
+            virtual ~DustSpawner();
 
             virtual void initialize(
                     dbasic::DeltaEngine *engine,
@@ -24,11 +24,11 @@ namespace bp {
             void setModel(dbasic::ModelAsset *asset) { m_model = asset; }
 
         private:
-            void createPlanet();
+            void createDust();
 
             float m_cooldown;
             dbasic::ModelAsset *m_model;
     };
 } /* namespace bp */
 
-#endif /* BEEF_PLANET_PLANET_SPAWNER_H */
+#endif /* BEEF_PLANET_DUST_SPAWNER_H */

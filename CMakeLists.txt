@@ -18,6 +18,7 @@ add_executable(beef-planet WIN32
     # Source files
     src/main.cpp
     src/beef_application.cpp
+    src/dust_spawner.cpp
     src/game_object.cpp
     src/gravity_simulator.cpp
     src/mouse_controller.cpp
@@ -32,6 +33,7 @@ add_executable(beef-planet WIN32
     # Include files
     include/delta.h
     include/beef_application.h
+    include/dust_spawner.h
     include/game_object.h
     include/gravity_simulator.h
     include/mouse_controller.h
